@@ -3,7 +3,7 @@ class Tunnel:
     
     tunnel_config = {}# Initialize an empty dictionary for the tunnel configuration
 
-    def Banner():
+    def banner():
         print("\n")
         print("""   __________ __       ______                       __
   / ___/ ___// /_     /_  __/_  ______  ____  ___  / /
@@ -56,22 +56,22 @@ Made by carnifex17""")
         #print(command) Look what command is gonna be executed
         tunnel_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)#Executing process
         print(f"Executing {name_tunnel} tunnel")#Giving effect of working, but at this time process already executed or failed
-        Tunnel.Wait()
+        Tunnel.wait()
         if tunnel_process.returncode == 0:
             print("SSH tunnel established successfully")
             print(f"PID of the \'{name_tunnel}\' tunnel process: {tunnel_process.pid}")
         else:
             print("Failed to establish one or both of the SSH tunnels")
 
-    def Show():#Method to show json file
+    def show():#Method to show json file
         with open("config.json", "r") as json_file:#Getting dictionary from config if existed
             Tunnel.tunnel_config = json.load(json_file)
         print("Looking for file")
-        Tunnel.Wait()
+        Tunnel.wait()
         print(Tunnel.tunnel_config)
         #print(Tunnel.tunnel_config["Tunnel2"]["IP"]) ----- Parse certain data from dic
         
-    def Wait():#Method to make waiting effect
+    def wait():#Method to make waiting effect
         i = 0
         while i < 3:
             print(".", flush = True, end =" ")
@@ -79,7 +79,7 @@ Made by carnifex17""")
             time.sleep(1)
         print("\n")
 
-    def Commands():
+    def commands():
         print("""With this tool you could manage address book just with this fancy TUI
 Available commands for now is:
 Commands
@@ -93,7 +93,7 @@ Banner
 """)
 
 #Here's main code begins  
-Tunnel.Banner()
+Tunnel.banner()
 if os.path.exists("config.json"):
     with open("config.json", "r") as json_file:#Getting dictionary from config if existed
         Tunnel.tunnel_config = json.load(json_file)
@@ -102,9 +102,9 @@ else:
 while True:
     arg=input("> > > ")
     if(arg=="Wait" or arg=="wait"):#Done
-        Tunnel.Wait()
+        Tunnel.wait()
     elif(arg=="Change" or arg=="change"):
-        Tunnel.Change()
+        Tunnel.change()
     elif(arg=="Add" or arg=="add"):#Done but not tested
         Tunnel.add_tunnel()
     elif(arg=="Exit" or arg=="exit"):
@@ -112,11 +112,11 @@ while True:
     elif(arg=="Execute" or arg=="execute"):
         Tunnel.exec_tunnel()
     elif(arg=="Banner" or arg=="banner"):
-        Tunnel.Banner()
+        Tunnel.banner()
     elif(arg=="Show" or arg=="show"):
-        Tunnel.Show()
+        Tunnel.show()
     elif(arg=="Commands" or arg=="commands"):
-        Tunnel.Commands()
+        Tunnel.commands()
     elif(arg=="Clear" or arg=="clear"):
         os.system('clear')
     else:
