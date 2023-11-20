@@ -1,0 +1,10 @@
+{
+    "Tunnel1": {
+        "Key": "new_key",
+        "Type": "L",
+        "L-Port": 80,
+        "IP": "10.0.2.15",
+        "R-Port": 80,
+        "User": "carnifex17"
+    }
+}

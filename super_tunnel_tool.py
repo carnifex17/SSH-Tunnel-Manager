@@ -51,10 +51,10 @@ Made by carnifex17""")
         
         command = [
             "ssh",
-            f"-i ~/.ssh/{Tunnel.tunnel_config[name_tunnel]['Key']}"            
-            f"-{Tunnel.tunnel_config[name_tunnel]['Type']}",
-            f"{Tunnel.tunnel_config[name_tunnel]['L-Port']}:localhost:{Tunnel.tunnel_config[name_tunnel]['R-Port']}",
-            f"{Tunnel.tunnel_config[name_tunnel]['User']}@{Tunnel.tunnel_config[name_tunnel]['IP']}"
+            f" -i ~/.ssh/{Tunnel.tunnel_config[name_tunnel]['Key']}"            
+            f" -{Tunnel.tunnel_config[name_tunnel]['Type']}",
+            f" {Tunnel.tunnel_config[name_tunnel]['L-Port']}:localhost:{Tunnel.tunnel_config[name_tunnel]['R-Port']}",
+            f" {Tunnel.tunnel_config[name_tunnel]['User']}@{Tunnel.tunnel_config[name_tunnel]['IP']}"
         ]
         print(command) #Look what command is gonna be executed
         tunnel_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)#Executing process
