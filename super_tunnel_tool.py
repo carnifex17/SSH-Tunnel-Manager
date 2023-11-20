@@ -23,12 +23,14 @@ Made by carnifex17""")
             print(f"Tunnel with the name '{tunnel_name}' already exists.")
             return
         else:  
+            ssh_key = input("Enter ssh key name: ")
             tunnel_type = input("Enter Type: ")
             l_port = int(input("Enter L-Port: "))
             ip = input("Enter remote IP: ")
             r_port = int(input("Enter R-Port: "))
             tunnel_username = input("Enter remote username: ")
             Tunnel.tunnel_config[tunnel_name] = {#Adding data to tunnel_config dictionary
+                "Key": ssh_key,
                 "Type": tunnel_type,
                 "L-Port": l_port,
                 "IP": ip,
@@ -49,11 +51,12 @@ Made by carnifex17""")
         
         command = [
             "ssh",
+            f"-i ~/.ssh/{Tunnel.tunnel_config[name_tunnel]['Key']}"            
             f"-{Tunnel.tunnel_config[name_tunnel]['Type']}",
             f"{Tunnel.tunnel_config[name_tunnel]['L-Port']}:localhost:{Tunnel.tunnel_config[name_tunnel]['R-Port']}",
             f"{Tunnel.tunnel_config[name_tunnel]['User']}@{Tunnel.tunnel_config[name_tunnel]['IP']}"
         ]
-        #print(command) Look what command is gonna be executed
+        print(command) #Look what command is gonna be executed
         tunnel_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)#Executing process
         print(f"Executing {name_tunnel} tunnel")#Giving effect of working, but at this time process already executed or failed
         Tunnel.Wait()
@@ -61,7 +64,7 @@ Made by carnifex17""")
             print("SSH tunnel established successfully")
             print(f"PID of the \'{name_tunnel}\' tunnel process: {tunnel_process.pid}")
         else:
-            print("Failed to establish one or both of the SSH tunnels")
+            print("Failed to establish SSH tunnel")
 
     def Show():#Method to show json file
         with open("config.json", "r") as json_file:#Getting dictionary from config if existed
