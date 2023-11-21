@@ -48,23 +48,33 @@ Made by carnifex17""")
 
     def exec_tunnel():#Execute existing in config tunnels
         name_tunnel = input("Enter tunnel, which you want to execute: ")
-        
-        command = [
+        telnet_command = f"telnet localhost {Tunnel.tunnel_config[name_tunnel]['L-Port']}"
+        tunnel_command = [
             "ssh",
-            f" -i ~/.ssh/{Tunnel.tunnel_config[name_tunnel]['Key']}"            
-            f" -{Tunnel.tunnel_config[name_tunnel]['Type']}",
-            f" {Tunnel.tunnel_config[name_tunnel]['L-Port']}:localhost:{Tunnel.tunnel_config[name_tunnel]['R-Port']}",
-            f" {Tunnel.tunnel_config[name_tunnel]['User']}@{Tunnel.tunnel_config[name_tunnel]['IP']}"
+            f"-i ~/.ssh/{Tunnel.tunnel_config[name_tunnel]['Key']}"            
+            f"-{Tunnel.tunnel_config[name_tunnel]['Type']}",
+            f"{Tunnel.tunnel_config[name_tunnel]['L-Port']}:localhost:{Tunnel.tunnel_config[name_tunnel]['R-Port']}",
+            f"{Tunnel.tunnel_config[name_tunnel]['User']}@{Tunnel.tunnel_config[name_tunnel]['IP']}"
         ]
-        print(command) #Look what command is gonna be executed
-        tunnel_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)#Executing process
+        print(tunnel_command) #Look what command is gonna be executed
+        tunnel_process = subprocess.Popen(tunnel_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)#Executing process
         print(f"Executing {name_tunnel} tunnel")#Giving effect of working, but at this time process already executed or failed
         Tunnel.Wait()
-        if tunnel_process.returncode == 0:
-            print("SSH tunnel established successfully")
-            print(f"PID of the \'{name_tunnel}\' tunnel process: {tunnel_process.pid}")
-        else:
-            print("Failed to establish SSH tunnel")
+        time.sleep(5)
+        try:
+            telnet_process = subprocess.Popen(telnet_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            if telnet_process.returncode == 0:
+                print(f"Successfully connected to the forwarded port {Tunnel.tunnel_config[name_tunnel]['L-Port']}.")
+            else:
+                print(f"Error: Unable to connect to the forwarded port. Telnet exit status: {telnet_process.returncode}")
+
+        except subprocess.TimeoutExpired:
+            print("Error: Timeout while trying to connect to the forwarded port.")
+
+        finally:
+    # Terminate the tunnel process
+            tunnel_process.terminate()
 
     def Show():#Method to show json file
         with open("config.json", "r") as json_file:#Getting dictionary from config if existed
