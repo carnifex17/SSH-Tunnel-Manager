@@ -51,11 +51,12 @@ Made by carnifex17""")
         telnet_command = f"telnet localhost {Tunnel.tunnel_config[name_tunnel]['L-Port']}"
         tunnel_command = [
             "ssh",
-            "-i", f"/home/carnifex17/.ssh/{Tunnel.tunnel_config[name_tunnel]['Key']}",
+             "-i", f"/home/carnifex17/.ssh/{Tunnel.tunnel_config[name_tunnel]['Key']}",
             f"-{Tunnel.tunnel_config[name_tunnel]['Type']}",
-            f" {Tunnel.tunnel_config[name_tunnel]['L-Port']}:localhost:{Tunnel.tunnel_config[name_tunnel]['R-Port']}"
-            f" {Tunnel.tunnel_config[name_tunnel]['User']}@{Tunnel.tunnel_config[name_tunnel]['IP']}"
-        ]   
+            f"{Tunnel.tunnel_config[name_tunnel]['User']}@{Tunnel.tunnel_config[name_tunnel]['IP']}",
+            f"-L {Tunnel.tunnel_config[name_tunnel]['L-Port']}:localhost:{Tunnel.tunnel_config[name_tunnel]['R-Port']}"
+        ]
+
         print(tunnel_command) #Look what command is gonna be executed
         tunnel_process = subprocess.Popen(tunnel_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)#Executing process
         print(f"Executing {name_tunnel} tunnel")#Giving effect of working, but at this time process already executed or failed
@@ -64,21 +65,21 @@ Made by carnifex17""")
         print(f"SSH Output:\n{output1.decode()}")
         print(f"SSH Error:\n{error1.decode()}")
         #Tunnel.Wait()
-        try:
+        '''try:
             telnet_process = subprocess.Popen(telnet_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            #output, error = telnet_process.communicate(timeout=10) # Delete output, error =, that's for logging errors
+            output, error = telnet_process.communicate(timeout=10) # Delete output, error =, that's for logging errors
             time.sleep(5)
             if telnet_process.returncode == 0:
                 print(f"Successfully connected to the forwarded port {Tunnel.tunnel_config[name_tunnel]['L-Port']}.")
             else:
                 print(telnet_command)#This three commands are for logging commands
-                #print(f"Telnet Output:\n{output.decode()}")
-                #print(f"Telnet Error:\n{error.decode()}")
-                #print(f"Error: Unable to connect to the forwarded port. Telnet exit status: {telnet_process.returncode}")
+                print(f"Telnet Output:\n{output.decode()}")
+                print(f"Telnet Error:\n{error.decode()}")
+                print(f"Error: Unable to connect to the forwarded port. Telnet exit status: {telnet_process.returncode}")
         finally:
     # Terminate the tunnel process
             tunnel_process.terminate()
-
+'''
     def Show():#Method to show json file
         with open("config.json", "r") as json_file:#Getting dictionary from config if existed
             Tunnel.tunnel_config = json.load(json_file)
