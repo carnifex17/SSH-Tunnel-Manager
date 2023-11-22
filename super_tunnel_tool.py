@@ -53,21 +53,22 @@ Made by carnifex17""")
             "ssh",
              "-i", f"/home/carnifex17/.ssh/{Tunnel.tunnel_config[name_tunnel]['Key']}",
             f"-{Tunnel.tunnel_config[name_tunnel]['Type']}",
-            f"{Tunnel.tunnel_config[name_tunnel]['User']}@{Tunnel.tunnel_config[name_tunnel]['IP']}",
-            f"-L {Tunnel.tunnel_config[name_tunnel]['L-Port']}:localhost:{Tunnel.tunnel_config[name_tunnel]['R-Port']}"
+            f"{Tunnel.tunnel_config[name_tunnel]['L-Port']}:localhost:{Tunnel.tunnel_config[name_tunnel]['R-Port']}",
+            f"{Tunnel.tunnel_config[name_tunnel]['User']}@{Tunnel.tunnel_config[name_tunnel]['IP']}"
         ]
-
-        print(tunnel_command) #Look what command is gonna be executed
-        tunnel_process = subprocess.Popen(tunnel_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)#Executing process
-        print(f"Executing {name_tunnel} tunnel")#Giving effect of working, but at this time process already executed or failed
-        print(tunnel_command)#Next 4 lines are for logging, comment them after succesful work of program
-        output1, error1 = tunnel_process.communicate(timeout=10)
-        print(f"SSH Output:\n{output1.decode()}")
-        print(f"SSH Error:\n{error1.decode()}")
-        #Tunnel.Wait()
-        '''try:
+        try:
+            tunnel_process = subprocess.Popen(tunnel_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(f"Executing {name_tunnel} tunnel")#Giving effect of working, but at this time process already executed or failed
+            print(tunnel_command)
+            tunnel_process.communicate(timeout=5)
+        except subprocess.TimeoutExpired as e:
+            print(f"Tunnel process timed out after {e.timeout} seconds.")
+        finally:
+            print("SUPERKEK")
+            #tunnel_process.terminate()
+        try:
             telnet_process = subprocess.Popen(telnet_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            output, error = telnet_process.communicate(timeout=10) # Delete output, error =, that's for logging errors
+            output, error = telnet_process.communicate(timeout=5) # Delete output, error =, that's for logging errors
             time.sleep(5)
             if telnet_process.returncode == 0:
                 print(f"Successfully connected to the forwarded port {Tunnel.tunnel_config[name_tunnel]['L-Port']}.")
@@ -76,10 +77,13 @@ Made by carnifex17""")
                 print(f"Telnet Output:\n{output.decode()}")
                 print(f"Telnet Error:\n{error.decode()}")
                 print(f"Error: Unable to connect to the forwarded port. Telnet exit status: {telnet_process.returncode}")
-        finally:
-    # Terminate the tunnel process
-            tunnel_process.terminate()
-'''
+        except subprocess.TimeoutExpired as e:
+            print(f"Telnet process timed out after {e.timeout} seconds.")
+        finally:# Terminate the tunnel process
+            print("Terminating Telnet & Tunnel...")
+            #telnet_process.terminate()
+            tunnel_process.terminate() 
+
     def Show():#Method to show json file
         with open("config.json", "r") as json_file:#Getting dictionary from config if existed
             Tunnel.tunnel_config = json.load(json_file)

@@ -2,9 +2,9 @@
     "Tunnel1": {
         "Key": "new_key",
         "Type": "L",
-        "L-Port": 2222,
+        "L-Port": 5555,
         "IP": "192.168.0.104",
-        "R-Port": 22,
+        "R-Port": 1337,
         "User": "carnifex17"
     }
 }
