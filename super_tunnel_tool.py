@@ -2,7 +2,7 @@ import json, subprocess,os,time,sys
 class Tunnel:
     
     tunnel_config = {}# Initialize an empty dictionary for the tunnel configuration
-    tunnel_data = {}#This is empty dictionary for saving data about existing tunnels, like id, name etc
+   
     def Banner():
         print("\n")
         print("""   __________ __       ______                       __
@@ -23,6 +23,7 @@ Made by carnifex17""")
             print(f"Tunnel with the name '{tunnel_name}' already exists.")
             return
         else:  
+            pid = 0
             ssh_key = input("Enter ssh key name: ")
             tunnel_type = input("Enter Type: ")
             l_port = int(input("Enter L-Port: "))
@@ -35,14 +36,15 @@ Made by carnifex17""")
                 "L-Port": l_port,
                 "IP": ip,
                 "R-Port": r_port,
-                "User": tunnel_username
+                "User": tunnel_username,
+                "PID": pid
             }
             print(Tunnel.tunnel_config)
             if input("Are all the data entered correctly? Y/N: ") == "Y":
                 with open("config.json", "w") as json_file:#Making a json file or opening it if existing
                     json.dump(Tunnel.tunnel_config, json_file, indent=4)#Write dictionary data into config
                     print("Writing data")
-                    Tunnel.Wait()
+                    Tunnel.Wait(3)
             else:
                 return
 
@@ -74,12 +76,9 @@ Made by carnifex17""")
             time.sleep(5)
             if telnet_process.returncode == 0:
                 print(f"Successfully connected to the forwarded port {Tunnel.tunnel_config[name_tunnel]['L-Port']}.")
-                Tunnel.tunnel_data[name_tunnel] = {#Adding data to tunnel_config dictionary
-                    "Name": name_tunnel,
-                    "PID": tunnel_process.pid + 1,
-                    "IP": Tunnel.tunnel_config[name_tunnel]['IP']
-                }
-                print(Tunnel.tunnel_data[name_tunnel])
+                Tunnel.tunnel_config[name_tunnel]["PID"] = tunnel_process.pid + 1 
+                with open("config.json", "w") as json_file:#Making a json file or opening it if existing
+                    json.dump(Tunnel.tunnel_config, json_file, indent=4)
             else:
                 print(telnet_command)#This three commands are for logging commands
                 print(f"Telnet Output:\n{output.decode()}")
@@ -87,8 +86,8 @@ Made by carnifex17""")
                 print(f"Error: Unable to connect to the forwarded port. Telnet exit status: {telnet_process.returncode}")
         except subprocess.TimeoutExpired as e:
             print(f"Telnet process timed out after {e.timeout} seconds.")
-        except Exception as e:
-            print(f"An error occurred: {e}")
+        #except Exception as e:
+         #   print(f"An error occurred: {e}")
         finally:# Terminate the tunnel process
             telnet_process.terminate()
             #tunnel_process.terminate() 
@@ -96,8 +95,11 @@ Made by carnifex17""")
             main()
 
     def kill_tunnel():
-        tun = input("Which Tunnel do you want to kill? ")
-        pid = Tunnel.tunnel_data[tun]["PID"]
+        name_tunnel = input("Which Tunnel do you want to kill? ")
+        if name_tunnel not in Tunnel.tunnel_config:
+            print(f"Error: Tunnel '{name_tunnel}' not found.")
+            return
+        pid = Tunnel.tunnel_config[name_tunnel]["PID"]
         try:
             subprocess.run(['sudo', 'kill', str(pid)], check=True)
             print(f"Tunnel with PID {pid} has been killed.")
@@ -108,7 +110,7 @@ Made by carnifex17""")
         with open("config.json", "r") as json_file:#Getting dictionary from config if existed
             Tunnel.tunnel_config = json.load(json_file)
         print("Looking for file")
-        Tunnel.Wait()
+        Tunnel.Wait(3)
         print(Tunnel.tunnel_config)
         #print(Tunnel.tunnel_config["Tunnel2"]["IP"]) ----- Parse certain data from dic
         
@@ -144,7 +146,7 @@ def main():
     while True:
         arg=input("> > > ")
         if(arg=="Wait" or arg=="wait"):
-            Tunnel.Wait()
+            Tunnel.Wait(3)
         elif(arg=="Change" or arg=="change"):
             Tunnel.Change()
         elif(arg=="Add" or arg=="add"):#Done but not tested
