@@ -16,11 +16,6 @@ class Tunnel:
 /_/  /_/\__,_/_/ /_/\__,_/\__, /\___/_/               
                          /____/      
 Made by carnifex17""")
-    def get_user_input(prompt=""):
-        try:
-            return input(prompt)
-        except EOFError:
-            return None
 
     def add_tunnel():#Add new data or just completes the dictionary with tunnel config data 
         tunnel_name = input("Enter Tunnel name: ")
@@ -90,13 +85,10 @@ Made by carnifex17""")
             print(f"An error occurred: {e}")
         finally:# Terminate the tunnel process
             #print("Terminating Telnet & Tunnel...")
-            #telnet_process.terminate()
+            telnet_process.terminate()
             #tunnel_process.terminate() 
-            print(f"Tunnel {name_tunnel}succesfully made")
-        try:
-            user_input = input("Enter something to continue")
-        except EOFError:
-            pass
+            print(f"SUPERKEK2")
+            main()
     def Show():#Method to show json file
         with open("config.json", "r") as json_file:#Getting dictionary from config if existed
             Tunnel.tunnel_config = json.load(json_file)
@@ -135,33 +127,27 @@ def main():
     else:
         print("\nconfig.json does not exist, please make it with Add command\n")
     while True:
-        try:
-            Tunnel.get_user_input("Enter something to continue: ")
-            arg=input("\n> > > ")
-            if(arg=="Wait" or arg=="wait"):#Done
-                Tunnel.Wait()
-            elif(arg=="Change" or arg=="change"):
-                Tunnel.Change()
-            elif(arg=="Add" or arg=="add"):#Done but not tested
-                Tunnel.add_tunnel()
-            elif(arg=="Exit" or arg=="exit"):
-                exit()
-            elif(arg=="Execute" or arg=="execute"):
-                Tunnel.exec_tunnel()
-            elif(arg=="Banner" or arg=="banner"):
-                Tunnel.Banner()
-            elif(arg=="Show" or arg=="show"):
-                Tunnel.Show()
-            elif(arg=="Commands" or arg=="commands"):
-                Tunnel.Commands()
-            elif(arg=="Clear" or arg=="clear"):
-                os.system('clear')
-            else:
-                print("To watch all possible commands just type \'Commands\'")
-        except EOFError:
-            print("\nReceived EOF (End of File)")
+        arg=input("> > > ")
+        if(arg=="Wait" or arg=="wait"):
+            Tunnel.Wait()
+        elif(arg=="Change" or arg=="change"):
+            Tunnel.Change()
+        elif(arg=="Add" or arg=="add"):#Done but not tested
+            Tunnel.add_tunnel()
+        elif(arg=="Exit" or arg=="exit"):
             exit()
+        elif(arg=="Execute" or arg=="execute"):
+            Tunnel.exec_tunnel()
+        elif(arg=="Banner" or arg=="banner"):
+            Tunnel.Banner()
+        elif(arg=="Show" or arg=="show"):
+            Tunnel.Show()
+        elif(arg=="Commands" or arg=="commands"):
+            Tunnel.Commands()
+        elif(arg=="Clear" or arg=="clear"):
+            os.system('clear')
+        else:
+            print("To watch all possible commands just type \'Commands\'")
 
 if __name__ == "__main__":
     main()
-#Checking if commits working in vscode
