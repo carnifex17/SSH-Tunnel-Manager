@@ -67,8 +67,8 @@ Made by carnifex17""")
             print(f"Tunnel process timed out after {e.timeout} seconds.")
         except Exception as e:
             print(f"An error occurred: {e}")
-        finally:
-            print("SUPERKEK")
+        #finally:
+            #print("SUPERKEK")
             #tunnel_process.terminate()
         try:
             telnet_process = subprocess.Popen(telnet_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -91,7 +91,7 @@ Made by carnifex17""")
         finally:# Terminate the tunnel process
             telnet_process.terminate()
             #tunnel_process.terminate() 
-            print(f"SUPERKEK2")
+            #print(f"SUPERKEK2")
             main()
 
     def kill_tunnel():
